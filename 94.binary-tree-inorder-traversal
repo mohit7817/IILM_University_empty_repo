@@ -1,0 +1,19 @@
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        st = []
+        ans = []
+        
+        if root is None:
+            return ans
+
+        cur = root
+        while cur is not None or len(st) != 0:
+            if cur:
+                st.append(cur)
+                cur = cur.left
+            else:
+                cur = st.pop()
+                ans.append(cur.val)
+                cur = cur.right
+        
+        return ans
