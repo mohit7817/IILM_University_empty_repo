@@ -1,0 +1,50 @@
+from collections import deque
+
+class Solution:
+    def shortestBridge(self, grid):
+        n = len(grid)
+        visited = set()
+        queue = deque()
+        
+        # DFS to find first island
+        def dfs(r, c):
+            if (r < 0 or r >= n or c < 0 or c >= n or
+                (r, c) in visited or grid[r][c] == 0):
+                return
+            
+            visited.add((r, c))
+            queue.append((r, c, 0))  # (row, col, distance)
+            
+            dfs(r+1, c)
+            dfs(r-1, c)
+            dfs(r, c+1)
+            dfs(r, c-1)
+        
+        # Step 1: Find first island
+        found = False
+        for i in range(n):
+            if found:
+                break
+            for j in range(n):
+                if grid[i][j] == 1:
+                    dfs(i, j)
+                    found = True
+                    break
+        
+        # Step 2: BFS to reach second island
+        directions = [(1,0), (-1,0), (0,1), (0,-1)]
+        
+        while queue:
+            r, c, dist = queue.popleft()
+            
+            for dr, dc in directions:
+                nr, nc = r + dr, c + dc
+                
+                if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
+                    if grid[nr][nc] == 1:
+                        return dist
+                    
+                    visited.add((nr, nc))
+                    queue.append((nr, nc, dist + 1))
+        
+        return -1
